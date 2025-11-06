@@ -1,0 +1,22 @@
+[package]
+version = "1.1.0"
+
+title = "FBM Terrain Generator"
+description = "Generates fractal terrain meshes on the active USD stage using CUDA-accelerated FBM."
+category = "Environment"
+keywords = ["terrain", "fbm", "cuda", "usd", "mesh"]
+icon = "data/icon.png"
+preview_image = "data/preview.png"
+changelog = "docs/CHANGELOG.md"
+readme = "docs/README.md"
+authors = ["Astro"]
+repository = "https://github.com/NVIDIA-Omniverse/kit-extension-template-cpp"
+
+[[python.module]]
+name = "uas.fbm.impl.fbm"
+
+[[documentation]]
+pages = [
+    "docs/Overview.md",
+    "docs/CHANGELOG.md",
+]
