@@ -23,7 +23,7 @@ includedirs {
     "src/cuda"
 }
 
-add_usd { "usdGeom" }
+add_usd { "usdGeom", "usdShade" }
 
 -- ---------- Sources ----------
 files {
@@ -36,9 +36,11 @@ files {
 filter { "system:windows" }
     local cuda_path = os.getenv("CUDA_PATH")
     if cuda_path ~= nil then
+        includedirs { cuda_path .. "/include" }
         libdirs { cuda_path .. "/lib/x64" }
         links { "cudart", "oldnames" }
     end
+    defines { "_CRT_SECURE_NO_WARNINGS" }
 filter {}
 
 -- NVCC custom compile for .cu files (single-TU flow)
