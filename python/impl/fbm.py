@@ -20,8 +20,8 @@ class FBM(omni.ext.IExt):
         self.seed_model = ui.SimpleIntModel(42)
         self.octaves_model = ui.SimpleIntModel(8)
         self.size_model = ui.SimpleIntModel(1024)
-        self.mesh_scale_model = ui.SimpleFloatModel(400.0)
-        self.height_model = ui.SimpleFloatModel(20.0)
+        self.mesh_scale_model = ui.SimpleFloatModel(2000.0)
+        self.height_model = ui.SimpleFloatModel(150.0)
         self.mesh_prim_path = "/World/FBMTerrain"
         self.mesh = None
 
