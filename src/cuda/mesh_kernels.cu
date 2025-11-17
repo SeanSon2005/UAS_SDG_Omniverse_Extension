@@ -82,6 +82,35 @@ __global__ void build_vertex_normal_kernel(const float* __restrict__ heights,
     normals[idx * 3 + 2] = n.z;
 }
 
+__global__ void build_topology_kernel(int grid_size,
+                                      int quad_dim,
+                                      int* counts,
+                                      int* indices) {
+    int quad = blockIdx.x * blockDim.x + threadIdx.x;
+    int quad_total = quad_dim * quad_dim;
+    if (quad >= quad_total) return;
+
+    int y = quad / quad_dim;
+    int x = quad % quad_dim;
+    int face = quad * 2;
+    int tri_idx = face * 3;
+
+    int i0 = y * grid_size + x;
+    int i1 = y * grid_size + (x + 1);
+    int i2 = (y + 1) * grid_size + x;
+    int i3 = (y + 1) * grid_size + (x + 1);
+
+    counts[face + 0] = 3;
+    counts[face + 1] = 3;
+
+    indices[tri_idx + 0] = i0;
+    indices[tri_idx + 1] = i2;
+    indices[tri_idx + 2] = i1;
+    indices[tri_idx + 3] = i1;
+    indices[tri_idx + 4] = i2;
+    indices[tri_idx + 5] = i3;
+}
+
 #endif // __CUDACC__
 
 extern "C" void build_mesh_geometry_cuda(const float* heights,
@@ -128,5 +157,47 @@ extern "C" void build_mesh_geometry_cuda(const float* heights,
     cudaFree(d_heights);
     cudaFree(d_vertices);
     cudaFree(d_normals);
+#endif
+}
+
+extern "C" void build_mesh_topology_cuda(int grid_size,
+                                         int quad_dim,
+                                         int* counts_out,
+                                         int* indices_out) {
+#ifndef __CUDACC__
+    (void)grid_size;
+    (void)quad_dim;
+    (void)counts_out;
+    (void)indices_out;
+#else
+    if (!counts_out || !indices_out || quad_dim <= 0 || grid_size <= 1) {
+        return;
+    }
+
+    int quad_total = quad_dim * quad_dim;
+    if (quad_total <= 0) {
+        return;
+    }
+    int face_count = quad_total * 2;
+    size_t counts_bytes = sizeof(int) * static_cast<size_t>(face_count);
+    size_t indices_bytes = sizeof(int) * static_cast<size_t>(face_count) * 3;
+
+    int* d_counts = nullptr;
+    int* d_indices = nullptr;
+
+    cudaMalloc(&d_counts, counts_bytes);
+    cudaMalloc(&d_indices, indices_bytes);
+
+    int threads = 256;
+    int blocks = (quad_total + threads - 1) / threads;
+    build_topology_kernel<<<blocks, threads>>>(
+        grid_size, quad_dim, d_counts, d_indices);
+    cudaDeviceSynchronize();
+
+    cudaMemcpy(counts_out, d_counts, counts_bytes, cudaMemcpyDeviceToHost);
+    cudaMemcpy(indices_out, d_indices, indices_bytes, cudaMemcpyDeviceToHost);
+
+    cudaFree(d_counts);
+    cudaFree(d_indices);
 #endif
 }

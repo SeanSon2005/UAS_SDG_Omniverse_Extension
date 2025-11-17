@@ -10,3 +10,10 @@ extern "C" void build_mesh_geometry_cuda(
     float height_scale,
     float* vertices_out,
     float* normals_out);
+
+// Host-callable entry point that fills triangle counts/indices for a regular grid mesh.
+extern "C" void build_mesh_topology_cuda(
+    int grid_size,
+    int quad_dim,
+    int* counts_out,
+    int* indices_out);

@@ -98,29 +98,12 @@ void GenerateFbmMesh(const pxr::UsdStageRefPtr& stage, const FbmMeshParams& para
 
     pxr::VtArray<int> counts(face_count);
     pxr::VtArray<int> indices(face_count * 3);
-
-    for (int f = 0; f < face_count; ++f) {
-        counts[f] = 3;
-    }
-
-    int face_index = 0;
-    for (int y = 0; y < quad_dim; ++y) {
-        for (int x = 0; x < quad_dim; ++x) {
-            const int i0 = y * grid_size + x;
-            const int i1 = y * grid_size + (x + 1);
-            const int i2 = (y + 1) * grid_size + x;
-            const int i3 = (y + 1) * grid_size + (x + 1);
-
-            indices[face_index * 3 + 0] = i0;
-            indices[face_index * 3 + 1] = i2;
-            indices[face_index * 3 + 2] = i1;
-            ++face_index;
-
-            indices[face_index * 3 + 0] = i1;
-            indices[face_index * 3 + 1] = i2;
-            indices[face_index * 3 + 2] = i3;
-            ++face_index;
-        }
+    if (face_count > 0) {
+        build_mesh_topology_cuda(
+            grid_size,
+            quad_dim,
+            counts.data(),
+            indices.data());
     }
 
     pxr::SdfPath prim_path = ResolvePrimPath(params.prim_path);
