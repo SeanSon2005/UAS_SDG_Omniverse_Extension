@@ -56,6 +56,7 @@ void GenerateFbmMesh(const pxr::UsdStageRefPtr& stage, const FbmMeshParams& para
     }
     std::vector<float> heights(sample_count, 0.0f);
 
+    // Compute FBM heights using CUDA kernel (heights: flattened GRID_SIZE x GRID_SIZE)
     fbm2d_cuda(
         heights.data(),
         grid_x.data(),
@@ -68,9 +69,9 @@ void GenerateFbmMesh(const pxr::UsdStageRefPtr& stage, const FbmMeshParams& para
         params.seed,
         params.octaves);
 
+    // Build mesh geometry (vertices and normals)
     std::vector<float> vertices(static_cast<size_t>(sample_count) * 3, 0.0f);
     std::vector<float> normals(static_cast<size_t>(sample_count) * 3, 0.0f);
-
     build_mesh_geometry_cuda(
         heights.data(),
         grid_size,
@@ -79,11 +80,11 @@ void GenerateFbmMesh(const pxr::UsdStageRefPtr& stage, const FbmMeshParams& para
         vertices.data(),
         normals.data());
 
+    // Prepare USD mesh data
     pxr::VtArray<pxr::GfVec3f> point_array(sample_count);
     pxr::VtArray<pxr::GfVec3f> normal_array(sample_count);
     pxr::GfRange3f bounds;
     bounds.SetEmpty();
-
     for (int i = 0; i < sample_count; ++i) {
         pxr::GfVec3f point(vertices[i * 3 + 0], vertices[i * 3 + 1], vertices[i * 3 + 2]);
         pxr::GfVec3f normal(normals[i * 3 + 0], normals[i * 3 + 1], normals[i * 3 + 2]);
@@ -92,10 +93,10 @@ void GenerateFbmMesh(const pxr::UsdStageRefPtr& stage, const FbmMeshParams& para
         bounds.ExtendBy(point);
     }
 
+    // Build mesh topology (faces)
     const int quad_dim = std::max(0, grid_size - 1);
     const int quad_count = quad_dim * quad_dim;
     const int face_count = quad_count * 2;
-
     pxr::VtArray<int> counts(face_count);
     pxr::VtArray<int> indices(face_count * 3);
     if (face_count > 0) {
@@ -106,18 +107,22 @@ void GenerateFbmMesh(const pxr::UsdStageRefPtr& stage, const FbmMeshParams& para
             indices.data());
     }
 
+    // If the prim at the specified path already exists, remove it first
     pxr::SdfPath prim_path = ResolvePrimPath(params.prim_path);
     if (stage->GetPrimAtPath(prim_path)) {
         stage->RemovePrim(prim_path);
     }
 
+    // Define the Mesh in the USD Stage at a given Prim Path.
     pxr::UsdGeomMesh mesh = pxr::UsdGeomMesh::Define(stage, prim_path);
-    mesh.CreatePointsAttr().Set(point_array);
-    mesh.CreateNormalsAttr().Set(normal_array);
-    mesh.SetNormalsInterpolation(pxr::UsdGeomTokens->vertex);
-    mesh.CreateFaceVertexCountsAttr().Set(counts);
-    mesh.CreateFaceVertexIndicesAttr().Set(indices);
-
+    // Inherited from UsdGeomPointBased:
+    mesh.CreatePointsAttr().Set(point_array); 	// Sets points.
+    mesh.CreateNormalsAttr().Set(normal_array);	// Sets normals.
+    mesh.SetNormalsInterpolation(pxr::UsdGeomTokens->vertex); 	// Set Normal Interpolation.
+    // Inherited from UsdGeomMesh:
+    mesh.CreateFaceVertexCountsAttr().Set(counts);			// Set faceVertexCounts.
+    mesh.CreateFaceVertexIndicesAttr().Set(indices);			// Set faceVertexIndices.
+    // Inherited from UsdGeomBoundable:
     pxr::VtArray<pxr::GfVec3f> extent(2);
     extent[0] = bounds.GetMin();
     extent[1] = bounds.GetMax();

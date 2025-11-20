@@ -8,6 +8,7 @@
 
 #ifdef __CUDACC__
 
+// Computes the cross product of two 3D vectors.
 static __device__ __forceinline__ float3 fbm_cross(const float3& a, const float3& b) {
     return make_float3(
         a.y * b.z - a.z * b.y,
@@ -15,6 +16,7 @@ static __device__ __forceinline__ float3 fbm_cross(const float3& a, const float3
         a.x * b.y - a.y * b.x);
 }
 
+// Normalizes a 3D vector to unit length.
 static __device__ __forceinline__ float3 fbm_normalize(const float3& v) {
     float len = sqrtf(v.x * v.x + v.y * v.y + v.z * v.z);
     if (len > 1e-6f) {
@@ -24,6 +26,7 @@ static __device__ __forceinline__ float3 fbm_normalize(const float3& v) {
     return make_float3(0.f, 1.f, 0.f);
 }
 
+// CUDA kernel that generates vertex positions and normals from a heightmap.
 __global__ void build_vertex_normal_kernel(const float* __restrict__ heights,
                                            float* __restrict__ vertices,
                                            float* __restrict__ normals,
@@ -82,6 +85,7 @@ __global__ void build_vertex_normal_kernel(const float* __restrict__ heights,
     normals[idx * 3 + 2] = n.z;
 }
 
+// CUDA kernel that generates triangle indices and face counts for a grid mesh.
 __global__ void build_topology_kernel(int grid_size,
                                       int quad_dim,
                                       int* counts,
@@ -113,6 +117,7 @@ __global__ void build_topology_kernel(int grid_size,
 
 #endif // __CUDACC__
 
+// Host wrapper function that manages memory and launches the vertex/normal generation kernel.
 extern "C" void build_mesh_geometry_cuda(const float* heights,
                                          int size,
                                          float mesh_scale,
@@ -160,6 +165,7 @@ extern "C" void build_mesh_geometry_cuda(const float* heights,
 #endif
 }
 
+// Host wrapper function that manages memory and launches the topology generation kernel.
 extern "C" void build_mesh_topology_cuda(int grid_size,
                                          int quad_dim,
                                          int* counts_out,

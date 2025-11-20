@@ -8,10 +8,12 @@
 
 #ifdef __CUDACC__
 
+// Computes the fade curve for Perlin noise interpolation.
 static __device__ __forceinline__ float fbm_fade(float t) {
     return t * t * t * (t * (t * 6.f - 15.f) + 10.f);
 }
 
+// Computes a hash value for 2D integer coordinates and a seed.
 static __device__ __forceinline__ uint32_t fbm_hash2i(int x, int y, uint32_t seed) {
     uint32_t h = (uint32_t)x * 0x27d4eb2dU ^ (uint32_t)y * 0x85ebca6bU ^ seed * 0x9e3779b9U;
     h ^= h >> 16; h *= 0x7feb352dU;
@@ -20,6 +22,7 @@ static __device__ __forceinline__ uint32_t fbm_hash2i(int x, int y, uint32_t see
     return h;
 }
 
+// Computes the dot product of a gradient vector (determined by hash) and a distance vector.
 static __device__ __forceinline__ float fbm_grad_dot(uint32_t h, float dx, float dy) {
     switch (h & 7U) {
         case 0:  return  dx +  dy;
@@ -33,6 +36,7 @@ static __device__ __forceinline__ float fbm_grad_dot(uint32_t h, float dx, float
     }
 }
 
+// Computes 2D Perlin noise for a given point and seed.
 static __device__ __forceinline__ float perlin2d(float x, float y, int seed, void*) {
     int   xi = (int)floorf(x);
     int   yi = (int)floorf(y);
@@ -59,6 +63,7 @@ static __device__ __forceinline__ float perlin2d(float x, float y, int seed, voi
     return n * 0.70710678f;
 }
 
+// Computes Fractal Brownian Motion (FBM) noise by summing octaves of Perlin noise.
 static __device__ __forceinline__
 float fbm2d_device(float2 point, float freq,
                    float lacun, float persist,
@@ -79,6 +84,7 @@ float fbm2d_device(float2 point, float freq,
     return result;
 }
 
+// CUDA kernel that computes FBM noise for an array of points in parallel.
 __global__ void fbm2d_kernel(const float2* __restrict__ pts,
                              float* __restrict__ out,
                              int n,
@@ -96,6 +102,7 @@ __global__ void fbm2d_kernel(const float2* __restrict__ pts,
 
 #endif // __CUDACC__
 
+// Host wrapper function that manages memory and launches the FBM CUDA kernel.
 extern "C" void fbm2d_cuda(float* h_out,
                            const float* h_x, const float* h_y,
                            int n,
