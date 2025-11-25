@@ -1,0 +1,21 @@
+{
+  "APPDATA": "C:\\Users\\astro\\AppData\\Roaming",
+  "COMSPEC": "C:\\Windows\\system32\\cmd.exe",
+  "HOMEDRIVE": "C:",
+  "HOMEPATH": "\\Users\\astro",
+  "LOCALAPPDATA": "C:\\Users\\astro\\AppData\\Local",
+  "PATH": "C:\\Users\\astro\\AppData\\Local\\Temp\\.tmpAOBPPh;C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v13.0\\bin\\x64;C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v13.0\\bin;C:\\Program Files\\Common Files\\Oracle\\Java\\javapath;C:\\Windows\\system32;C:\\Windows;C:\\Windows\\System32\\Wbem;C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\;C:\\Windows\\System32\\OpenSSH\\;C:\\Program Files\\Git\\cmd;C:\\Program Files\\Tailscale\\;C:\\Program Files\\Microsoft SQL Server\\Client SDK\\ODBC\\170\\Tools\\Binn\\;C:\\Program Files (x86)\\Microsoft SQL Server\\150\\Tools\\Binn\\;C:\\Program Files\\Microsoft SQL Server\\150\\Tools\\Binn\\;C:\\Program Files\\Microsoft SQL Server\\150\\DTS\\Binn\\;C:\\Program Files (x86)\\Windows Kits\\8.1\\Windows Performance Toolkit\\;C:\\Program Files\\wooting-analog-sdk\\;C:\\Program Files\\dotnet\\;C:\\Program Files\\Docker\\Docker\\resources\\bin;C:\\Program Files\\nodejs\\;C:\\Program Files\\NVIDIA Corporation\\NVIDIA App\\NvDLISR;C:\\Program Files\\Pandoc\\;C:\\Program Files\\Git LFS;C:\\Program Files (x86)\\Windows Kits\\10\\Windows Performance Toolkit\\;C:\\Program Files\\NVIDIA Corporation\\Nsight Compute 2025.3.1\\;C:\\Users\\astro\\miniconda3;C:\\Users\\astro\\miniconda3\\Library\\mingw-w64\\bin;C:\\Users\\astro\\miniconda3\\Library\\usr\\bin;C:\\Users\\astro\\miniconda3\\Library\\bin;C:\\Users\\astro\\miniconda3\\Scripts;C:\\Users\\astro\\AppData\\Local\\Programs\\Python\\Python310\\Scripts\\;C:\\Users\\astro\\AppData\\Local\\Programs\\Python\\Python310\\;C:\\Users\\astro\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\astro\\AppData\\Local\\Programs\\MiKTeX\\miktex\\bin\\x64\\;C:\\Users\\astro\\AppData\\Local\\Muse Hub\\lib;C:\\Users\\astro\\AppData\\Roaming\\npm;C:\\Users\\astro\\AppData\\Local\\GitHubDesktop\\bin;C:\\Users\\astro\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\Users\\astro\\AppData\\Local\\Programs\\Antigravity\\bin;c:\\Users\\astro\\.vscode\\extensions\\openai.chatgpt-0.4.46-win32-x64\\bin\\windows-x86_64",
+  "PATHEXT": ".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC",
+  "PROGRAMDATA": "C:\\ProgramData",
+  "PROGRAMFILES": "C:\\Program Files",
+  "PROGRAMFILES(X86)": "C:\\Program Files (x86)",
+  "PROGRAMW6432": "C:\\Program Files",
+  "PYTHONUNBUFFERED": "1",
+  "SYSTEMDRIVE": "C:",
+  "SYSTEMROOT": "C:\\Windows",
+  "TEMP": "C:\\Users\\astro\\AppData\\Local\\Temp",
+  "TMP": "C:\\Users\\astro\\AppData\\Local\\Temp",
+  "USERDOMAIN": "SEAN",
+  "USERNAME": "astro",
+  "USERPROFILE": "C:\\Users\\astro"
+}
